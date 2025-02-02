@@ -1,1 +1,1 @@
-export const URL = 'http://localhost:5500'
+export const URL = 'https://excelproject-1.onrender.com'
