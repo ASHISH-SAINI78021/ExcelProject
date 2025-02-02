@@ -5,6 +5,9 @@ const { getData } = require("../controllers/fileController.js");
 
 const router = express.Router();
 
+router.get("/" , async(req , res)=> {
+    res.send("App is listening...");
+})
 router.post("/upload", upload.single("file"), processFile);
 router.get("/get-data" , getData);
 
