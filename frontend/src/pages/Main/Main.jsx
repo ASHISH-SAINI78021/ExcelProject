@@ -136,14 +136,15 @@ const Main = () => {
     }
   
     setloading(true); // Start loading
-  
+    
+    const interval = setInterval(checkProgress, 500); // Poll every 500ms
     try {
       console.log("Uploading...");
       setUploadProgress(0);
       const formData = new FormData();
       formData.append("file", fileData);
 
-      const interval = setInterval(checkProgress, 500); // Poll every 500ms
+      
   
       await handleUpload(formData);
       console.log("Upload complete");
