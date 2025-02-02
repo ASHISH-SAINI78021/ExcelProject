@@ -1,0 +1,61 @@
+/* FileImport.module.css */
+
+.container {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    overflow-y: scroll;
+  }
+  
+  h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  /* .uploadBox {
+    border: 2px dashed #1890ff;
+    border-radius: 8px;
+    background: #f9f9f9;
+    padding: 20px;
+  } */
+  
+  .sheetSelector {
+    width: 200px;
+    margin-top: 15px;
+  }
+  
+  .tableContainer {
+    margin-top: 20px;
+  }
+  
+  .importButton {
+    margin-top: 15px;
+    background-color: #1890ff;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .importButton:hover {
+    background-color: #0073e6;
+  }
+  
+  .errorModal p {
+    color: red;
+    font-size: 14px;
+  }
+  
+  .actionIcon {
+    color: red;
+    cursor: pointer;
+    font-size: 18px;
+  }
+  
