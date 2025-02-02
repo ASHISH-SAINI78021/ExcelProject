@@ -123,11 +123,21 @@ const Main = () => {
 
 
   // progress Report
-  const checkProgress = () => {
-    fetch(`${URL}/api/progress`)
-      .then((res) => res.json())
-      .then((data) => setUploadProgress(data.progress))
-      .catch((err) => console.error("Progress error:", err));
+  const checkProgress = async() => {
+    try {
+      let response = await fetch(`${URL}/api/progress`);
+      if (response.ok){
+        response = await response.json();
+        console.log(response);
+      }
+    } catch (error) {
+      console.log(error);
+      message.error("Error in getting progress");
+    }
+    // fetch(`${URL}/api/progress`)
+    //   .then((res) => res.json())
+    //   .then((data) => setUploadProgress(data.progress))
+    //   .catch((err) => console.error("Progress error:", err));
   };
 
   const handleImport = async () => {
