@@ -124,7 +124,7 @@ const Main = () => {
 
   // progress Report
   const checkProgress = () => {
-    fetch(`${URL}/api/progress1`)
+    fetch(`${URL}/api/progress`)
       .then((res) => res.json())
       .then((data) => setUploadProgress(data.progress))
       .catch((err) => console.error("Progress error:", err));
