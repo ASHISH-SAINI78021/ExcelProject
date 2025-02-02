@@ -21,6 +21,7 @@ const Main = () => {
   const [errorModalVisible2, setErrorModalVisible2] = useState(false);
   const [workbook, setWorkbook] = useState(null);
   const [ErrorOnUploading, setErrorOnUploading] = useState([]);
+  const [loading , setloading] = useState(false);
 
   const uploadProps = {
     beforeUpload: (file) => {
@@ -116,30 +117,31 @@ const Main = () => {
     setErrorModalVisible2(true);
   };
 
-  const handleImport = () => {
+  const handleImport = async () => {
     if (validationErrors.length > 0) {
       message.warning("Some rows have errors. Only valid rows will be imported.");
     }
-
-    const init = async () => {
-      try {
-        console.log("Uploading...");
-        const formData = new FormData();
-        formData.append("file", fileData);
-
-        await handleUpload(formData);
-        console.log("Upload complete");
-        message.success("File Uploaded successfully");
-      } catch (error) {
-        const errors = error.response?.data?.errors || [];
-        uploadingError(errors);
-        console.error(error);
-        message.error("File upload failed.");
-      }
-    };
-
-    init();
+  
+    setloading(true); // Start loading
+  
+    try {
+      console.log("Uploading...");
+      const formData = new FormData();
+      formData.append("file", fileData);
+  
+      await handleUpload(formData);
+      console.log("Upload complete");
+      message.success("File Uploaded successfully");
+    } catch (error) {
+      const errors = error.response?.data?.errors || [];
+      uploadingError(errors);
+      console.error(error);
+      message.error("File upload failed.");
+    } finally {
+      setloading(false); // Stop loading
+    }
   };
+  
 
   return (
     <div className={styles.container}>
@@ -189,7 +191,7 @@ const Main = () => {
 
       {/* Import Button */}
       {tableData.length > 0 && (
-        <Button className={styles.importButton} onClick={handleImport}>
+        <Button className={styles.importButton} onClick={handleImport} loading={loading}>
           Import Data
         </Button>
       )}
