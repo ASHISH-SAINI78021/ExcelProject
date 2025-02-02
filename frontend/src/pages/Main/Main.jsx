@@ -123,52 +123,54 @@ const Main = () => {
 
 
   // progress Report
-  const checkProgress = async() => {
+  const checkProgress = async () => {
     try {
       let response = await fetch(`${URL}/api/progress`);
-      if (response.ok){
-        response = await response.json();
-        console.log(response);
+      if (response.ok) {
+        let data = await response.json();
+        console.log("Progress Response:", data);
+        setUploadProgress(data.progress); // ✅ Set progress state correctly
+      } else {
+        message.error("Failed to get progress");
       }
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching progress:", error);
       message.error("Error in getting progress");
     }
-    // fetch(`${URL}/api/progress`)
-    //   .then((res) => res.json())
-    //   .then((data) => setUploadProgress(data.progress))
-    //   .catch((err) => console.error("Progress error:", err));
   };
+  
 
   const handleImport = async () => {
     if (validationErrors.length > 0) {
       message.warning("Some rows have errors. Only valid rows will be imported.");
     }
   
-    setloading(true); // Start loading
-    
-    const interval = setInterval(checkProgress, 500); // Poll every 500ms
+    setloading(true);
+    setUploadProgress(0);
+  
+    const interval = setInterval(checkProgress, 500); // ✅ Poll every 500ms
+  
     try {
       console.log("Uploading...");
-      setUploadProgress(0);
       const formData = new FormData();
       formData.append("file", fileData);
-
-      
   
       await handleUpload(formData);
       console.log("Upload complete");
-      message.success("File Uploaded successfully");
+  
+      message.success("File uploaded successfully");
     } catch (error) {
       const errors = error.response?.data?.errors || [];
       uploadingError(errors);
       console.error(error);
       message.error("File upload failed.");
     } finally {
-      clearInterval(interval); // Stop polling
-      setloading(false); // Stop loading
+      clearInterval(interval); // ✅ Stop polling
+      setloading(false);
+      setUploadProgress(100); // ✅ Ensure progress reaches 100%
     }
   };
+  
   
 
   return (
