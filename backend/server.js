@@ -13,9 +13,8 @@ DbConnect();
 
 // CORS Configuration (More Secure)
 const corsOptions = {
-  origin: process.env.CLIENT_URL || "*", // Use a specific frontend URL in production
+  origin: process.env.CLIENT_URL, // Use a specific frontend URL in production
   credentials: true,
-  methods: "GET,POST,PUT,DELETE",
 };
 app.use(cors(corsOptions));
 
