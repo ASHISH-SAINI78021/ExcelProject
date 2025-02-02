@@ -43,10 +43,10 @@ const validateRow = (row, sheetName, rowIndex) => {
 let progress = 0;
 const processFile = async (req, res) => {
   try {
+    progress = 0;
     if (!req.file) return res.status(400).json({ error: "No file uploaded" });
     progress = 10;
 
-    // Read uploaded file
     const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
     const sheets = workbook.SheetNames;
     const allErrors = [];
@@ -80,21 +80,27 @@ const processFile = async (req, res) => {
     progress = 70;
 
     if (allErrors.length > 0) {
-      progress == 100;
+      progress = 100;
       return res.status(400).json({ errors: allErrors });
     }
-    // Save valid data to MongoDB
-    await Transaction.insertMany(validData);
-    res.json({ message: "File processed successfully", inserted: validData.length });
-    progress = 100;
+
+    // Simulate saving delay and update progress
+    setTimeout(async () => {
+      await Transaction.insertMany(validData);
+      progress = 100;
+      res.json({ message: "File processed successfully", inserted: validData.length });
+    }, 1000); // Simulates MongoDB insert delay
+
   } catch (error) {
+    progress = 100; // Mark completion even on failure
     res.status(500).json({ error: error.message });
   }
 };
 
 
+
 // 📌 progress report
-const progressReport = async(req , res)=> {
+const progressReport = (req , res)=> {
   res.json({progress});
 }
 
