@@ -40,15 +40,18 @@ const validateRow = (row, sheetName, rowIndex) => {
 };
 
 // 📌 Process and validate Excel file
+let progress = 0;
 const processFile = async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+    progress = 10;
 
     // Read uploaded file
     const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
     const sheets = workbook.SheetNames;
     const allErrors = [];
     const validData = [];
+    progress = 30;
 
     sheets.forEach((sheetName) => {
       const sheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1 });
@@ -62,6 +65,7 @@ const processFile = async (req, res) => {
         });
         return obj;
       });
+      progress = 50;
 
       data.forEach((row, index) => {
         const error = validateRow(row, sheetName, index);
@@ -73,16 +77,27 @@ const processFile = async (req, res) => {
       });
     });
 
+    progress = 70;
+
     if (allErrors.length > 0) {
+      progress == 100;
       return res.status(400).json({ errors: allErrors });
     }
     // Save valid data to MongoDB
     await Transaction.insertMany(validData);
     res.json({ message: "File processed successfully", inserted: validData.length });
+    progress = 100;
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
+
+// 📌 progress report
+const progressReport = async(req , res)=> {
+  res.json({progress});
+}
+
 
 // 📌 get data
 const getData = async(req , res)=> {
@@ -95,4 +110,4 @@ const getData = async(req , res)=> {
 }
 
 
-module.exports = { processFile , getData };
+module.exports = { processFile , getData , progressReport };

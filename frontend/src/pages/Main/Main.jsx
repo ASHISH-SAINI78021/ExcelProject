@@ -6,6 +6,7 @@ import _ from "lodash";
 import { handleUpload } from "../../http";
 import ErrorsModal from "../../Components/ErrorModal/ErrorModal";
 import styles from "./Main.module.css"; // Import CSS Module
+import { URL } from "../../../url";
 
 const { Dragger } = Upload;
 const { Option } = Select;
@@ -22,6 +23,9 @@ const Main = () => {
   const [workbook, setWorkbook] = useState(null);
   const [ErrorOnUploading, setErrorOnUploading] = useState([]);
   const [loading , setloading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+
+
 
   const uploadProps = {
     beforeUpload: (file) => {
@@ -117,6 +121,15 @@ const Main = () => {
     setErrorModalVisible2(true);
   };
 
+
+  // progress Report
+  const checkProgress = () => {
+    fetch(`${URL}/api/progress1`)
+      .then((res) => res.json())
+      .then((data) => setUploadProgress(data.progress))
+      .catch((err) => console.error("Progress error:", err));
+  };
+
   const handleImport = async () => {
     if (validationErrors.length > 0) {
       message.warning("Some rows have errors. Only valid rows will be imported.");
@@ -126,8 +139,11 @@ const Main = () => {
   
     try {
       console.log("Uploading...");
+      setUploadProgress(0);
       const formData = new FormData();
       formData.append("file", fileData);
+
+      const interval = setInterval(checkProgress, 500); // Poll every 500ms
   
       await handleUpload(formData);
       console.log("Upload complete");
@@ -138,6 +154,7 @@ const Main = () => {
       console.error(error);
       message.error("File upload failed.");
     } finally {
+      clearInterval(interval); // Stop polling
       setloading(false); // Stop loading
     }
   };
@@ -165,6 +182,10 @@ const Main = () => {
           ))}
         </Select>
       )}
+
+
+      {loading && <Progress percent={uploadProgress} status="active" />}
+
 
       {/* Data Table */}
       {tableData.length > 0 && (
